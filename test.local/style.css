@@ -1,0 +1,115 @@
+#bot-main {
+    background: #ff232d;
+    width: 350px;
+    height: 575px;
+    border: 2px solid #000000;
+}
+
+#bot-title {
+    /*position: relative;*/
+
+    /*background: azure;*/
+
+    /*margin: 20px 10px 10px 10px;*/
+
+    /*padding: 5px;*/
+    height: 20px;
+    text-align: center;
+    margin: 5px;
+    padding: 5px;
+}
+
+#bot-workspace {
+    height: 480px;
+    background: brown;
+    margin: 5px;
+    position: relative;
+    overflow: auto;
+    border-radius: 5px;
+    border: 2px solid black;
+}
+
+#bot-input {
+    /*background: antiquewhite;*/
+    float: bottom;
+    height: 50px;
+    text-align: center;
+    overflow: auto;
+}
+
+.bot-message {
+    position: relative;
+    margin: 5px;
+    padding: 5px;
+    background: azure;
+    border-radius: 5px;
+    width: fit-content;
+    max-width: 250px;
+    clear: both;
+    float: left;
+    box-shadow: 0 0 10px rgba(0,0,0,0.7)
+}
+
+.user-message {
+    position: relative;
+    margin: 5px;
+    padding: 5px;
+    background: #fff5c7;
+    border-radius: 5px;
+    width: fit-content;
+    max-width: 250px;
+    clear: both;
+    float: right;
+    box-shadow: 0 0 10px rgba(0,0,0,0.7)
+}
+
+
+
+#message-input {
+    position: relative;
+    width: 250px;
+    font-size: 17px;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 7px;
+}
+
+#send-message-button {
+    font-size: 17px;
+    float: right;
+    margin: 5px;
+}
+
+#offer-list {
+    background: coral;
+    z-index: 1;
+}
+
+.offer-list-item {
+    border-bottom: 1px solid black;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.offer-list-item:hover {
+    cursor: pointer;
+    background: lightsalmon;
+}
+
+.offer-block {
+    background: antiquewhite;
+    display: inline;
+    border: 2px solid #4cff3b;
+    border-radius: 5px;
+    width: fit-content;
+    float: left;
+    padding: 5px;
+    margin: 5px 0 5px 5px;
+
+}
+
+.offer-block:hover {
+    background: aquamarine;
+    cursor: pointer;
+}
