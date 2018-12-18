@@ -8,16 +8,16 @@ $property = $_GET['property'];
 
 if ($property == "none") return;
 
-$cities = [];
+$items = [];
 $sort_keys = [];
 
 $file = fopen("properties/" . $property, "r") or die("Unable to open file!");
 
 while(!feof($file)) {
-    $city = fgets($file);
-    array_push($cities, $city);
+    $item = fgets($file);
+    array_push($items, $item);
 
-    $lower_city = mb_strtolower($city);
+    $lower_city = mb_strtolower($item);
     $lower_input = mb_strtolower($message);
     $key = levenshtein($lower_city, $lower_input);
     if (mb_strpos($lower_city, $lower_input) !== false) {
@@ -27,7 +27,7 @@ while(!feof($file)) {
 }
 fclose($file);
 
-array_multisort($sort_keys, $cities);
+array_multisort($sort_keys, $items);
 
 header('Content-type: application/json');
-echo json_encode(array_slice($cities, 0, 3), JSON_UNESCAPED_UNICODE);
+echo json_encode(array_slice($items, 0, 3), JSON_UNESCAPED_UNICODE);

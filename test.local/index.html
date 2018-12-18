@@ -5,16 +5,16 @@
     <title>AdBot</title>
 
     <link href="style.css" rel="stylesheet">
+
+    <script type = "text/javascript" src = "requests.js" ></script>
+    <script type = "text/javascript" src = "dialog_handlers.js" ></script>
     <script type = "text/javascript" src = "script.js" ></script>
+
 </head>
 <div id="bot-main">
     <div id="bot-title">Advisor bot</div>
     <div id="bot-workspace">
         <div class="bot-message">Привет! как тебя зовут?</div>
-        <!--<div class="user-message">Message 2</div>-->
-        <!--<div class="bot-message">Message some message some message some message some message</div>-->
-        <!--<div class="user-message">Message 2</div>-->
-        <!--<div class="bot-message">Message 2 long long mess</div>-->
     </div>
     <div id="bot-input">
         <input type="text" id="message-input" oninput="onUserInput()" onkeypress="onEnterInput(event)" autofocus>

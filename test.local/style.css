@@ -34,7 +34,6 @@
     float: bottom;
     height: 50px;
     text-align: center;
-    overflow: auto;
 }
 
 .bot-message {

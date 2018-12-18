@@ -1,84 +1,19 @@
-// import {getXmlHttp} from './requests';
-
-function getXmlHttp() {
-    let xmlhttp;
-    try {
-        xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-    } catch (e) {
-        try {
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        } catch (E) {
-            xmlhttp = false;
-        }
-    }
-    if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-        xmlhttp = new XMLHttpRequest();
-    }
-    return xmlhttp;
-}
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-class BotMessageHandler {
-    constructor() {
-        this.isUserTurn = true;
-        this.step = 0;
-        this.isBotSentMessage = false;
-        this.botMessages = [
-            "В каком году ты родился(ась)?",
-            "Из какого ты города?",
-            "Какое у тебя образование? (1 курс/выпускник/аспирантура/нет)",
-            "В каком вузе ты учился(ась) / учишься? "
-        ];
-    }
-
-    refreshData() {
-        this.isUserTurn = true;
-        this.step = 0;
-        this.isBotSentMessage = false;
-    }
-
-    getStep() {
-        return this.step;
-    }
-
-    sendMessage() {
-        if (this.step >= this.botMessages.length) {
-            this.step += 1;
-            return;
-        }
-        let newMessage = "<div class=\"bot-message\">" + this.botMessages[this.step] + "</div>";
-        document.getElementById("bot-workspace").innerHTML += newMessage;
-        setScrollBottom();
-
-        this.step += 1;
-    }
-}
-
 let botMessageHandler = new BotMessageHandler();
-
-function getProperty(step) {
-    switch (step) {
-        case 0: return "none";
-        case 1: return "none";
-        case 2: return "city";
-        case 3: return "education";
-        case 4: return "university";
-        default: return "none";
-    }
-}
+let userDataHandler = new UserDataHandler();
 
 function onUserInput() {
     let message = document.getElementById("message-input").value;
-    let property = getProperty(botMessageHandler.getStep());
-    //test request
-    let req = getXmlHttp();
-    req.onreadystatechange = function() {
-        if (req.readyState === 4) {
-            if(req.status === 200) {
-                let offerList = JSON.parse(req.responseText);
+    let property = botMessageHandler.getProperty();
+
+    let request = getXmlHttp();
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if(request.status === 200) {
+                let offerList = JSON.parse(request.responseText);
 
                 let resultHTML = "";
                 for (let i = 0; i < offerList.length; ++i) {
@@ -92,10 +27,8 @@ function onUserInput() {
             }
         }
     };
-    req.open('GET', '/handlers/offer_list_handler.php?message=' + message + '&property=' + property, true);
-    req.send(null);
-
-
+    request.open('GET', '/handlers/offer_list_handler.php?message=' + message + '&property=' + property, true);
+    request.send(null);
 }
 
 function onClickItem(event) {
@@ -128,6 +61,7 @@ function onSendMessage() {
     setScrollBottom();
 
     // await sleep(700);
+    userDataHandler.append(botMessageHandler.step, message);
     botMessageHandler.sendMessage();
 
     document.getElementById("message-input").focus();
