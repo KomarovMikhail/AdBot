@@ -50,21 +50,36 @@ function onEnterInput(event) {
 }
 
 function onSendMessage() {
-    let message = document.getElementById("message-input").value;
+    let inputElement = document.getElementById("message-input");
+    let message = inputElement.value;
     if (message.length === 0) {
         return
     }
     let newMessage = "<div class=\"user-message\">" + message + "</div>";
     document.getElementById("bot-workspace").innerHTML += newMessage;
-    document.getElementById("message-input").value = "";
+    userDataHandler.append(botMessageHandler.step, message);
+
+    // refresh default values for input area
+    inputElement.value = "";
+    inputElement.disabled = false;
     document.getElementById("offer-list").hidden = true;
     setScrollBottom();
 
+    if (botMessageHandler.needSendData()) {
+        userDataHandler.getVacancy();
+    }
+
     // await sleep(700);
-    userDataHandler.append(botMessageHandler.step, message);
+
+    //send next question
     botMessageHandler.sendMessage();
 
     document.getElementById("message-input").focus();
 
+    if (botMessageHandler.needChoiceList()) {
 
+        inputElement.disabled = true;
+        inputElement.value = "Выбери из списка:";
+        onUserInput();
+    }
 }

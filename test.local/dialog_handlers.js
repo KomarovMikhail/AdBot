@@ -27,16 +27,21 @@ class BotMessageHandler {
             case 3: return "education";
             case 4: return "university";
             case 5: return "specialty";
+            case 8: return "intern_exp";
+            case 9: return "work_exp";
             case 10: return "specialty";
             case 11: return "business";
             case 12: return "specialty";
             case 13: return "business";
+            case 14: return "hours_week";
+            case 15: return "salary";
+            case 16: return "emp_type";
             default: return "none";
         }
     }
 
     sendMessage() {
-        if (this.step === this.botMessages.length) {
+        if (this.step >= this.botMessages.length) {
             this.step += 1;
             return;
         }
@@ -45,6 +50,14 @@ class BotMessageHandler {
         setScrollBottom();
 
         this.step += 1;
+    }
+
+    needChoiceList() {
+        return this.step === 8 || this.step === 9 || this.step === 14 || this.step === 15 || this.step === 16
+    }
+
+    needSendData() {
+        return this.step >= this.botMessages.length;
     }
 }
 
@@ -72,7 +85,7 @@ class UserDataHandler {
             case 13: key = 'false_business'; break;
             case 14: key = 'hours_week'; break;
             case 15: key = 'salary'; break;
-            case 16: key = 'types'; break;
+            case 16: key = 'emp_type'; break;
         }
         this.data[key] = data;
     }
