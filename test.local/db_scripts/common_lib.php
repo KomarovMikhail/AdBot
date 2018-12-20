@@ -38,7 +38,7 @@ function create_db(mysqli $conn) {
 }
 
 function create_user_step_table(mysqli $conn) {
-    $query = "CREATE TABLE IF NOT EXISTS user_step(id TEXT PRIMARY KEY, val TEXT)";
+    $query = "CREATE TABLE IF NOT EXISTS user_step(id TEXT PRIMARY KEY, step TEXT)";
     return $conn->query($query);
 }
 
