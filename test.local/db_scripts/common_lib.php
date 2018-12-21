@@ -38,13 +38,13 @@ function create_db(mysqli $conn) {
 }
 
 function create_user_step_table(mysqli $conn) {
-    $query = "CREATE TABLE IF NOT EXISTS user_step(id TEXT PRIMARY KEY, step TEXT)";
+    $query = "CREATE TABLE IF NOT EXISTS user_step(id VARCHAR(255) PRIMARY KEY, step INT)";
     return $conn->query($query);
 }
 
 function create_user_data_table(mysqli $conn) {
     $query = "CREATE TABLE IF NOT EXISTS user_data(
-        id TEXT PRIMARY KEY, 
+        id VARCHAR(255) PRIMARY KEY, 
         name TEXT, 
         born INT, 
         city TEXT, 

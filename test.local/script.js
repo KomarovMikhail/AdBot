@@ -55,6 +55,14 @@ function onSendMessage() {
     if (message.length === 0) {
         return
     }
+
+    let justStarted = false;
+    if (botMessageHandler.mail === null) {
+        botMessageHandler.mail = message;
+        justStarted = true;
+    }
+
+    // create user message in chat area
     let newMessage = "<div class=\"user-message\">" + message + "</div>";
     document.getElementById("bot-workspace").innerHTML += newMessage;
     userDataHandler.append(botMessageHandler.step, message);
@@ -72,7 +80,7 @@ function onSendMessage() {
     // await sleep(700);
 
     //send next question
-    botMessageHandler.sendMessage();
+    botMessageHandler.sendMessage(justStarted);
 
     document.getElementById("message-input").focus();
 

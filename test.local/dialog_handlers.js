@@ -1,7 +1,10 @@
 class BotMessageHandler {
     constructor() {
-        this.step = 0;
+        this.step = -1;
+        this.mail = null;
         this.botMessages = [
+            "Похоже, мы с тобой видимся впервые. Ну или ты решил не сохранять данные о себе и я тебя забыл. " +
+            "В любом случае - давай знакомиться! Как тебя зовут?", // 0
             "В каком году ты родился(ась)?", // 1
             "Из какого ты города?", // 2
             "Какое у тебя образование? (1 курс/выпускник/аспирантура/нет)", // 3
@@ -40,16 +43,33 @@ class BotMessageHandler {
         }
     }
 
-    sendMessage() {
-        if (this.step >= this.botMessages.length) {
+    sendMessage(justStarted) {
+        if (this.step === this.botMessages.length) {
             this.step += 1;
             return;
         }
-        let newMessage = "<div class=\"bot-message\">" + this.botMessages[this.step] + "</div>";
+        let request = getXmlHttp();
+        let step = -1;
+        request.onreadystatechange = function() {
+            if (request.readyState === 4) {
+                if(request.status === 200) {
+                    step = JSON.parse(request.responseText);
+                }
+            }
+        };
+        request.open('GET', '/handlers/step_handler.php?id=' + this.mail, false);
+        request.send(null);
+
+        if (justStarted && step > 0) {
+            let newMessage = "<div class=\"bot-message\">Похоже, что мы уже общались раньше. Давай продолжим)</div>";
+            document.getElementById("bot-workspace").innerHTML += newMessage;
+            setScrollBottom();
+        }
+        let newMessage = "<div class=\"bot-message\">" + this.botMessages[step] + "</div>";
         document.getElementById("bot-workspace").innerHTML += newMessage;
         setScrollBottom();
 
-        this.step += 1;
+        this.step = step;
     }
 
     needChoiceList() {
@@ -98,13 +118,13 @@ class UserDataHandler {
             }
         }
         requestUrl = requestUrl.substring(0, requestUrl.length - 1);
-        alert(requestUrl);
 
         let request = getXmlHttp();
         request.onreadystatechange = function() {
             if (request.readyState === 4) {
                 if(request.status === 200) {
-
+                    let response = JSON.parse(request.responseText);
+                    alert(response)
                 }
             }
         };
