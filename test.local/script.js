@@ -73,9 +73,9 @@ function onSendMessage() {
     document.getElementById("offer-list").hidden = true;
     setScrollBottom();
 
-    if (botMessageHandler.needSendData()) {
-        userDataHandler.getVacancy();
-    }
+    // if (botMessageHandler.needSendData()) {
+    //     userDataHandler.getVacancy();
+    // }
 
     // await sleep(700);
 

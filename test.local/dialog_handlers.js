@@ -43,9 +43,31 @@ class BotMessageHandler {
         }
     }
 
+    sendVacancies() {
+        let request = getXmlHttp();
+        let vacancies = [];
+        request.onreadystatechange = function() {
+            if (request.readyState === 4) {
+                if(request.status === 200) {
+                    vacancies = JSON.parse(request.responseText);
+                }
+            }
+        };
+        request.open('GET', '/handlers/vacancy_handler.php?id=' + this.mail, false);
+        request.send(null);
+
+        let newMessage = "<div class='bot-message'>Вот вакансии, которые тебе могут подойти:\n";
+        for (let i = 0; i < vacancies.length; i++) {
+            newMessage += i + ") " + vacancies[i] + "\n";
+        }
+        newMessage += "</div>";
+        document.getElementById("bot-workspace").innerHTML += newMessage;
+        setScrollBottom();
+    }
+
     sendMessage(justStarted) {
-        if (this.step === this.botMessages.length) {
-            this.step += 1;
+        if (this.step === this.botMessages.length - 1) {
+            this.sendVacancies();
             return;
         }
         let request = getXmlHttp();
@@ -57,7 +79,7 @@ class BotMessageHandler {
                 }
             }
         };
-        request.open('GET', '/handlers/step_handler.php?id=' + this.mail, false);
+        request.open('GET', '/handlers/user_step_handler.php?id=' + this.mail, false);
         request.send(null);
 
         if (justStarted && step > 0) {
@@ -83,10 +105,15 @@ class BotMessageHandler {
 
 class UserDataHandler {
     constructor() {
-        this.data = {};
+        this.mail = null;
     }
 
     append(step, data) {
+        if (step === -1) {
+            this.mail = data;
+            return
+        }
+
         let key;
         switch (step) {
             case 0: key = 'name'; break;
@@ -107,28 +134,41 @@ class UserDataHandler {
             case 15: key = 'salary'; break;
             case 16: key = 'emp_type'; break;
         }
-        this.data[key] = data;
-    }
 
-    getVacancy() {
-        let requestUrl = '/handlers/vacancy_handler.php?';
-        for (let key in this.data) {
-            if (this.data.hasOwnProperty(key)) {
-                requestUrl += key + '=' + this.data[key] + '&';
-            }
-        }
-        requestUrl = requestUrl.substring(0, requestUrl.length - 1);
+        let requestUrl = '/handlers/user_data_handler.php?id=' + this.mail + '&property=' + key + '&value=' + data;
 
         let request = getXmlHttp();
         request.onreadystatechange = function() {
             if (request.readyState === 4) {
                 if(request.status === 200) {
                     let response = JSON.parse(request.responseText);
-                    alert(response)
+                    alert(response.length)
                 }
             }
         };
         request.open('GET', requestUrl, true);
         request.send(null);
     }
+
+    // getVacancy() {
+    //     let requestUrl = '/handlers/vacancy_handler.php?';
+    //     for (let key in this.data) {
+    //         if (this.data.hasOwnProperty(key)) {
+    //             requestUrl += key + '=' + this.data[key] + '&';
+    //         }
+    //     }
+    //     requestUrl = requestUrl.substring(0, requestUrl.length - 1);
+    //
+    //     let request = getXmlHttp();
+    //     request.onreadystatechange = function() {
+    //         if (request.readyState === 4) {
+    //             if(request.status === 200) {
+    //                 let response = JSON.parse(request.responseText);
+    //                 alert(response)
+    //             }
+    //         }
+    //     };
+    //     request.open('GET', requestUrl, true);
+    //     request.send(null);
+    // }
 }
