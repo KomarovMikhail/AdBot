@@ -1,5 +1,6 @@
 class BotMessageHandler {
     constructor() {
+        this.over = false;
         this.step = -1;
         this.mail = null;
         this.botMessages = [
@@ -22,6 +23,13 @@ class BotMessageHandler {
             "Какие твои ожидания по З/П", // 15
             "Отметь приоритетные для тебя типы занятости.", // 16
         ];
+    }
+
+    needList() {
+        if (this.step === 10) return true;
+        if (this.step === 11) return true;
+        if (this.step === 12) return true;
+        return this.step === 13;
     }
 
     getProperty() {
@@ -56,9 +64,9 @@ class BotMessageHandler {
         request.open('GET', '/handlers/vacancy_handler.php?id=' + this.mail, false);
         request.send(null);
 
-        let newMessage = "<div class='bot-message'>Вот вакансии, которые тебе могут подойти:\n";
+        let newMessage = "<div class='bot-message'><p>Вот вакансии, которые тебе могут подойти:</p>";
         for (let i = 0; i < vacancies.length; i++) {
-            newMessage += i + ") " + vacancies[i] + "\n";
+            newMessage += "<p>" + i + ") <a href='" + vacancies[i]['link'] + "' target='_blank'>" + vacancies[i]['name'] + "</a></p>";
         }
         newMessage += "</div>";
         document.getElementById("bot-workspace").innerHTML += newMessage;
@@ -66,8 +74,15 @@ class BotMessageHandler {
     }
 
     sendMessage(justStarted) {
+        if (this.over) {
+            let newMessage = "<div class=\"bot-message\">Спасибо за ответы! Если хочешь ответить на вопросы заново - нажми на кнопку \"Начать заново\" (Она скоро появится)</div>";
+            document.getElementById("bot-workspace").innerHTML += newMessage;
+            setScrollBottom();
+            return;
+        }
         if (this.step === this.botMessages.length - 1) {
             this.sendVacancies();
+            this.over = true;
             return;
         }
         let request = getXmlHttp();
@@ -76,6 +91,7 @@ class BotMessageHandler {
             if (request.readyState === 4) {
                 if(request.status === 200) {
                     step = JSON.parse(request.responseText);
+                    // alert(step)
                 }
             }
         };

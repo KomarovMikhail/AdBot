@@ -67,7 +67,7 @@ function create_user_data_table(mysqli $conn) {
 
 function create_vacancy_data_table(mysqli $conn) {
     $query = "CREATE TABLE IF NOT EXISTS vacancy_data(
-        id INT PRIMARY KEY, link TEXT)";
+        id INT PRIMARY KEY, link TEXT, name TEXT)";
     return $conn->query($query);
 }
 
