@@ -32,6 +32,10 @@ class BotMessageHandler {
         return this.step === 13;
     }
 
+    isOver() {
+        return this.over;
+    }
+
     getProperty() {
         switch (this.step) {
             case 2: return "city";
@@ -61,8 +65,9 @@ class BotMessageHandler {
                 }
             }
         };
-        request.open('GET', '/handlers/vacancy_handler.php?id=' + this.mail, false);
-        request.send(null);
+        request.open('POST', '/handlers/vacancy_handler.php', false);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.send('id=' + this.mail);
 
         let newMessage = "<div class='bot-message'><p>Вот вакансии, которые тебе могут подойти:</p>";
         for (let i = 0; i < vacancies.length; i++) {
@@ -95,12 +100,14 @@ class BotMessageHandler {
                 }
             }
         };
-        request.open('GET', '/handlers/user_step_handler.php?id=' + this.mail, false);
-        request.send(null);
+        request.open('POST', '/handlers/user_step_handler.php', false);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.send('id=' + this.mail);
 
         if (justStarted && step > 0) {
             let newMessage = "<div class=\"bot-message\">Похоже, что мы уже общались раньше. Давай продолжим)</div>";
             document.getElementById("bot-workspace").innerHTML += newMessage;
+            step -= 1;
             setScrollBottom();
         }
         let newMessage = "<div class=\"bot-message\">" + this.botMessages[step] + "</div>";
@@ -151,8 +158,6 @@ class UserDataHandler {
             case 16: key = 'emp_type'; break;
         }
 
-        let requestUrl = '/handlers/user_data_handler.php?id=' + this.mail + '&property=' + key + '&value=' + data;
-
         let request = getXmlHttp();
         request.onreadystatechange = function() {
             if (request.readyState === 4) {
@@ -162,8 +167,9 @@ class UserDataHandler {
                 }
             }
         };
-        request.open('GET', requestUrl, true);
-        request.send(null);
+        request.open('POST', '/handlers/user_data_handler.php', true);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.send('id=' + this.mail + '&property=' + key + '&value=' + data);
     }
 
     // getVacancy() {

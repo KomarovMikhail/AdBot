@@ -6,6 +6,9 @@ let botMessageHandler = new BotMessageHandler();
 let userDataHandler = new UserDataHandler();
 
 function onUserInput() {
+    if (botMessageHandler.isOver()) {
+        return
+    }
     let message = document.getElementById("message-input").value;
     let property = botMessageHandler.getProperty();
 
@@ -27,8 +30,9 @@ function onUserInput() {
             }
         }
     };
-    request.open('GET', '/handlers/offer_list_handler.php?message=' + message + '&property=' + property, true);
-    request.send(null);
+    request.open('POST', '/handlers/offer_list_handler.php', true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.send('message=' + message + '&property=' + property);
 }
 
 function onClickItem(event) {

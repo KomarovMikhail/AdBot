@@ -29,7 +29,7 @@ require_once "./../db_scripts/user_data_lib.php";
 require_once "./../db_scripts/vacancy_data_lib.php";
 require_once "./../db_scripts/common_lib.php";
 
-$user_id = $_GET['id'];
+$user_id = $_POST['id'];
 
 // TODO: get user data here
 

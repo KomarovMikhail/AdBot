@@ -1,7 +1,7 @@
 <?php
 
-$message = $_GET['message'];
-$property = $_GET['property'];
+$message = $_POST['message'];
+$property = $_POST['property'];
 
 //$message = "мед";
 //$property = "specialty";

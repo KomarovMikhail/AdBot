@@ -4,7 +4,7 @@ require_once "./../db_scripts/user_step_lib.php";
 require_once "./../db_scripts/common_lib.php";
 
 //$step = $_GET['step'];
-$id = $_GET['id'];
+$id = $_POST['id'];
 
 $conn = get_conn();
 if (!exists_user_step($conn, $id)) {

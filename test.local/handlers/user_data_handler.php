@@ -4,9 +4,9 @@ require_once "./../db_scripts/user_data_lib.php";
 require_once "./../db_scripts/common_lib.php";
 
 //$step = $_GET['step'];
-$id = $_GET['id'];
-$property = $_GET['property'];
-$value = $_GET['value'];
+$id = $_POST['id'];
+$property = $_POST['property'];
+$value = $_POST['value'];
 
 $conn = get_conn();
 
