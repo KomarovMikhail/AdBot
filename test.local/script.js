@@ -2,15 +2,35 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function checkEmailCorrect(email) {
+    return email.split('@').length === 2
+}
+
 let botMessageHandler = new BotMessageHandler();
 let userDataHandler = new UserDataHandler();
 
+function getLastItem(text) {
+    let list = text.split(/;\s*/);
+    return list[list.length - 1];
+}
+
+function addItemToList(text, item) {
+    let list = text.split(/;\s*/);
+    list[list.length - 1] = item;
+    return list.join('; ') + '; ';
+}
+
 function onUserInput() {
     if (botMessageHandler.isOver()) {
-        return
+        return;
     }
     let message = document.getElementById("message-input").value;
+    let item = message;
     let property = botMessageHandler.getProperty();
+
+    if (botMessageHandler.needList()) {
+        item = getLastItem(message);
+    }
 
     let request = getXmlHttp();
     request.onreadystatechange = function() {
@@ -32,13 +52,19 @@ function onUserInput() {
     };
     request.open('POST', '/handlers/offer_list_handler.php', true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.send('message=' + message + '&property=' + property);
+    request.send('message=' + item + '&property=' + property);
 }
 
 function onClickItem(event) {
     event = event || window.event; // IE
     let target = event.target || event.srcElement; // IE
-    document.getElementById("message-input").value = target.innerHTML;
+    let value = target.innerHTML;
+    if (botMessageHandler.needList()) {
+        value = addItemToList(document.getElementById("message-input").value, target.innerHTML);
+        document.getElementById("message-input").value = value;
+        return;
+    }
+    document.getElementById("message-input").value = value;
     onSendMessage();
 }
 
@@ -62,6 +88,17 @@ function onSendMessage() {
 
     let justStarted = false;
     if (botMessageHandler.mail === null) {
+        if (!checkEmailCorrect(message)) {
+            let newMessage = "<div class=\"bot-message\">Похоже, ты ввел некорректную почту. Введи, пожалуйста, снова.</div>";
+            document.getElementById("bot-workspace").innerHTML += newMessage;
+
+            // refresh default values for input area
+            inputElement.value = "";
+            inputElement.disabled = false;
+            document.getElementById("offer-list").hidden = true;
+            setScrollBottom();
+            return;
+        }
         botMessageHandler.mail = message;
         justStarted = true;
     }
@@ -89,7 +126,9 @@ function onSendMessage() {
     document.getElementById("message-input").focus();
 
     if (botMessageHandler.needChoiceList()) {
-
+        if (botMessageHandler.step === 17) { // need to change
+            return;
+        }
         inputElement.disabled = true;
         inputElement.value = "Выбери из списка:";
         onUserInput();

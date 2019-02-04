@@ -19,7 +19,7 @@
             Введи пожалуйста свой e-mail, чтобы я смог понять, общались ли мы с тобой раньше?</div>
     </div>
     <div id="bot-input">
-        <input type="text" id="message-input" oninput="onUserInput()" onkeypress="onEnterInput(event)" autofocus>
+        <input type="text" id="message-input" oninput="onUserInput()" onkeypress="onEnterInput(event)" autofocus onfocus="this.value = this.value;">
         <button id="send-message-button" onclick="onSendMessage()">></button>
         <div id="offer-list" hidden></div>
         <div id="choice-list" hidden></div>
