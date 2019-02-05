@@ -20,6 +20,40 @@ function addItemToList(text, item) {
     return list.join('; ') + '; ';
 }
 
+function sendMessage(message, flag=true) {
+    // flag = true - bot message, flag = false - user message
+    let label = "bot";
+    if (!flag) {
+        label = "user"
+    }
+    let newMessage = "<div class=\"" + label + "-message\">" + message + "</div>";
+    document.getElementById("bot-workspace").innerHTML += newMessage;
+    setScrollBottom();
+}
+
+// "again" command handler
+function startFromBeginning() {
+    sendMessage("/again", false);
+
+    if (botMessageHandler.mail !== null) {
+        let request = getXmlHttp();
+        request.open('POST', '/handlers/delete_user_handler.php', false);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        request.send('id=' + botMessageHandler.mail);
+    }
+
+    botMessageHandler = new BotMessageHandler();
+    userDataHandler = new UserDataHandler();
+    sendMessage("Окей! Я уже тебя забыл! Давай начнем все сначала. Напиши, пожалуйста, свой e-mail.")
+}
+
+function cleanInput(inputElement) {
+    inputElement.value = "";
+    inputElement.disabled = false;
+    document.getElementById("offer-list").hidden = true;
+    setScrollBottom();
+}
+
 function onUserInput() {
     if (botMessageHandler.isOver()) {
         return;
@@ -86,17 +120,22 @@ function onSendMessage() {
         return
     }
 
+    if (message === "/again") {
+        startFromBeginning();
+        cleanInput(inputElement);
+        return;
+    }
+
     let justStarted = false;
     if (botMessageHandler.mail === null) {
         if (!checkEmailCorrect(message)) {
-            let newMessage = "<div class=\"bot-message\">Похоже, ты ввел некорректную почту. Введи, пожалуйста, снова.</div>";
-            document.getElementById("bot-workspace").innerHTML += newMessage;
+            // let newMessage = "<div class=\"bot-message\">Похоже, ты ввел некорректную почту. Введи, пожалуйста, снова.</div>";
+            // document.getElementById("bot-workspace").innerHTML += newMessage;
+            sendMessage(message, false);
+            sendMessage("Похоже, ты ввел некорректную почту. Введи, пожалуйста, снова.");
 
             // refresh default values for input area
-            inputElement.value = "";
-            inputElement.disabled = false;
-            document.getElementById("offer-list").hidden = true;
-            setScrollBottom();
+            cleanInput(inputElement);
             return;
         }
         botMessageHandler.mail = message;
@@ -104,15 +143,11 @@ function onSendMessage() {
     }
 
     // create user message in chat area
-    let newMessage = "<div class=\"user-message\">" + message + "</div>";
-    document.getElementById("bot-workspace").innerHTML += newMessage;
+    sendMessage(message, false);
     userDataHandler.append(botMessageHandler.step, message);
 
     // refresh default values for input area
-    inputElement.value = "";
-    inputElement.disabled = false;
-    document.getElementById("offer-list").hidden = true;
-    setScrollBottom();
+    cleanInput(inputElement);
 
     // if (botMessageHandler.needSendData()) {
     //     userDataHandler.getVacancy();

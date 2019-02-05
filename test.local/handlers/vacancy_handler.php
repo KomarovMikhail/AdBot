@@ -38,7 +38,27 @@ $user_id = $_POST['id'];
 $conn = get_conn();
 $vacancies = select_all_vacancy_data($conn);
 
-echo json_encode($vacancies, JSON_UNESCAPED_UNICODE);
+// temporary generation of 3 random vacancies
+$ids = [];
+while (count($ids) < 3) {
+    $r = rand(0, count($vacancies) - 1);
+    $c = 0;
+    for ($i = 0 ; $i < count($ids); $i++) {
+        if ($ids[$i] == $r) {
+            $c++;
+        }
+    }
+    if ($c == 0) {
+        array_push($ids, $r);
+    }
+}
+
+$result = [];
+for ($i = 0 ; $i < count($ids); $i++) {
+    array_push($result, $vacancies[$ids[$i]]);
+}
+
+echo json_encode($result, JSON_UNESCAPED_UNICODE);
 
 
 

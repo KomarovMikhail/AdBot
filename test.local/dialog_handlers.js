@@ -70,23 +70,24 @@ class BotMessageHandler {
         for (let i = 0; i < vacancies.length; i++) {
             newMessage += "<p>" + i + ") <a href='" + vacancies[i]['link'] + "' target='_blank'>" + vacancies[i]['name'] + "</a></p>";
         }
+        newMessage += "<p>Если захочешь ответить на все вопросы заново - введи /again</p>";
         newMessage += "</div>";
         document.getElementById("bot-workspace").innerHTML += newMessage;
         setScrollBottom();
     }
 
     sendMessage(justStarted) {
-        if (this.over) {
-            let newMessage = "<div class=\"bot-message\">Спасибо за ответы! Если хочешь ответить на вопросы заново - нажми на кнопку \"Начать заново\" (Она скоро появится)</div>";
-            document.getElementById("bot-workspace").innerHTML += newMessage;
-            setScrollBottom();
-            return;
-        }
-        if (this.step === this.botMessages.length - 1) {
-            this.sendVacancies();
-            this.over = true;
-            return;
-        }
+        // if (this.over) {
+        //     let newMessage = "<div class=\"bot-message\">Спасибо за ответы! Если хочешь ответить на вопросы заново - нажми на кнопку \"Начать заново\" (Она скоро появится)</div>";
+        //     document.getElementById("bot-workspace").innerHTML += newMessage;
+        //     setScrollBottom();
+        //     return;
+        // }
+        // if (this.step === this.botMessages.length - 1) {
+        //     this.sendVacancies();
+        //     this.over = true;
+        //     return;
+        // }
         let request = getXmlHttp();
         let step = -1;
         request.onreadystatechange = function() {
@@ -102,14 +103,26 @@ class BotMessageHandler {
         request.send('id=' + this.mail);
 
         if (justStarted && step > 0) {
-            let newMessage = "<div class=\"bot-message\">Похоже, что мы уже общались раньше. Давай продолжим)</div>";
-            document.getElementById("bot-workspace").innerHTML += newMessage;
+            sendMessage("Похоже, что мы уже общались раньше. Давай продолжим)");
+            // let newMessage = "<div class=\"bot-message\">Похоже, что мы уже общались раньше. Давай продолжим)</div>";
+            // document.getElementById("bot-workspace").innerHTML += newMessage;
             step -= 1;
-            setScrollBottom();
         }
-        let newMessage = "<div class=\"bot-message\">" + this.botMessages[step] + "</div>";
-        document.getElementById("bot-workspace").innerHTML += newMessage;
-        setScrollBottom();
+
+        if (step < this.botMessages.length) {
+            sendMessage(this.botMessages[step]);
+            // let newMessage = "<div class=\"bot-message\">" + this.botMessages[step] + "</div>";
+            // document.getElementById("bot-workspace").innerHTML += newMessage;
+        }
+        if (step === this.botMessages.length) {
+            this.sendVacancies();
+            this.over = true;
+        }
+        if (step > this.botMessages.length) {
+            sendMessage("Спасибо за ответы! Если хочешь ответить на вопросы заново - введи /again")
+            // let newMessage = "<div class=\"bot-message\">Спасибо за ответы! Если хочешь ответить на вопросы заново - нажми на кнопку \"Начать заново\" (Она скоро появится)</div>";
+            // document.getElementById("bot-workspace").innerHTML += newMessage;
+        }
 
         this.step = step;
     }

@@ -16,6 +16,21 @@ function exists_user_data(mysqli $conn, $id) {
     return $result->num_rows != 0;
 }
 
+function delete_user_data(mysqli $conn, $id) {
+    $query = "DELETE FROM user_data WHERE id = '" . $id . "'";
+    return $conn->query($query);
+}
+
+function select_all_user_data(mysqli $conn) {
+    $query = "SELECT * FROM user_data";
+    $result = $conn->query($query);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            echo $row['id'] . '\n';
+        }
+    }
+}
+
 //function select(mysqli $conn, $id) {
 //    $query = "SELECT step FROM user_step WHERE id = " . $id;
 //    $result = $conn->query($query);

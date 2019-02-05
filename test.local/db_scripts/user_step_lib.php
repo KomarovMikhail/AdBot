@@ -35,3 +35,8 @@ function select_all_user_step(mysqli $conn) {
         }
     }
 }
+
+function delete_user_step(mysqli $conn, $id) {
+    $query = "DELETE FROM user_step WHERE id = '" . $id . "'";
+    return $conn->query($query);
+}
