@@ -12,7 +12,7 @@ class BotMessageHandler {
             "В каком вузе ты учился(ась) / учишься?", // 4
             "На какой специальности?", // 5
             "В каком году ты окончишь/окончил(а) институт?", // 6
-            "Какой твой срединий балл?", // 7
+            "Какой твой срединий балл по 5-бальной школе? (Например: 4.56)", // 7
             "Есть ли у тебя опыт стажировки?", // 8
             "А опыт работы?", // 9
             "Какие специальности ты для себя рассматриваешь? (Перечисли через ';')", // 10
@@ -77,17 +77,6 @@ class BotMessageHandler {
     }
 
     sendMessage(justStarted) {
-        // if (this.over) {
-        //     let newMessage = "<div class=\"bot-message\">Спасибо за ответы! Если хочешь ответить на вопросы заново - нажми на кнопку \"Начать заново\" (Она скоро появится)</div>";
-        //     document.getElementById("bot-workspace").innerHTML += newMessage;
-        //     setScrollBottom();
-        //     return;
-        // }
-        // if (this.step === this.botMessages.length - 1) {
-        //     this.sendVacancies();
-        //     this.over = true;
-        //     return;
-        // }
         let request = getXmlHttp();
         let step = -1;
         request.onreadystatechange = function() {
@@ -104,15 +93,11 @@ class BotMessageHandler {
 
         if (justStarted && step > 0) {
             sendMessage("Похоже, что мы уже общались раньше. Давай продолжим)");
-            // let newMessage = "<div class=\"bot-message\">Похоже, что мы уже общались раньше. Давай продолжим)</div>";
-            // document.getElementById("bot-workspace").innerHTML += newMessage;
             step -= 1;
         }
 
         if (step < this.botMessages.length) {
             sendMessage(this.botMessages[step]);
-            // let newMessage = "<div class=\"bot-message\">" + this.botMessages[step] + "</div>";
-            // document.getElementById("bot-workspace").innerHTML += newMessage;
         }
         if (step === this.botMessages.length) {
             this.sendVacancies();
@@ -120,8 +105,6 @@ class BotMessageHandler {
         }
         if (step > this.botMessages.length) {
             sendMessage("Спасибо за ответы! Если хочешь ответить на вопросы заново - введи /again")
-            // let newMessage = "<div class=\"bot-message\">Спасибо за ответы! Если хочешь ответить на вопросы заново - нажми на кнопку \"Начать заново\" (Она скоро появится)</div>";
-            // document.getElementById("bot-workspace").innerHTML += newMessage;
         }
 
         this.step = step;
@@ -129,10 +112,6 @@ class BotMessageHandler {
 
     needChoiceList() {
         return this.step === 8 || this.step === 9 || this.step === 14 || this.step === 15 || this.step === 16
-    }
-
-    needSendData() {
-        return this.step >= this.botMessages.length;
     }
 }
 

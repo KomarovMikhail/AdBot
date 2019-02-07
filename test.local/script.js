@@ -1,9 +1,8 @@
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function checkEmailCorrect(email) {
-    return email.split('@').length === 2
+    if (email.split('@').length !== 2) {
+        return false;
+    }
+    return email.split('@')[1].split('.').length === 2;
 }
 
 let botMessageHandler = new BotMessageHandler();
@@ -52,6 +51,24 @@ function cleanInput(inputElement) {
     inputElement.disabled = false;
     document.getElementById("offer-list").hidden = true;
     setScrollBottom();
+}
+
+// checks if user message is correct
+function messageCorrect(message, step) {
+    let result = 0;
+    let request = getXmlHttp();
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if(request.status === 200) {
+                result = JSON.parse(request.responseText);
+            }
+        }
+    };
+    request.open('POST', '/handlers/check_message_handler.php', false);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.send('message=' + message + '&step=' + step);
+
+    return result === 1;
 }
 
 function onUserInput() {
@@ -129,8 +146,6 @@ function onSendMessage() {
     let justStarted = false;
     if (botMessageHandler.mail === null) {
         if (!checkEmailCorrect(message)) {
-            // let newMessage = "<div class=\"bot-message\">Похоже, ты ввел некорректную почту. Введи, пожалуйста, снова.</div>";
-            // document.getElementById("bot-workspace").innerHTML += newMessage;
             sendMessage(message, false);
             sendMessage("Похоже, ты ввел некорректную почту. Введи, пожалуйста, снова.");
 
@@ -144,16 +159,18 @@ function onSendMessage() {
 
     // create user message in chat area
     sendMessage(message, false);
+
+    //check if value is correct
+    if (!messageCorrect(message, botMessageHandler.step)) {
+        sendMessage("Это не похоже на корректное значение, попробуй еще раз.");
+        cleanInput(inputElement);
+        document.getElementById("message-input").focus();
+        return;
+    }
     userDataHandler.append(botMessageHandler.step, message);
 
     // refresh default values for input area
     cleanInput(inputElement);
-
-    // if (botMessageHandler.needSendData()) {
-    //     userDataHandler.getVacancy();
-    // }
-
-    // await sleep(700);
 
     //send next question
     botMessageHandler.sendMessage(justStarted);
