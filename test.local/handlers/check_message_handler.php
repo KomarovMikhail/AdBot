@@ -79,18 +79,18 @@ switch ($step) {
         }
         break;
     }
-    case 10: {
-        if (!check_list($message, "specialty")) {
-            $result = 0;
-        }
-        break;
-    }
-    case 11: {
-        if (!check_list($message, "business")) {
-            $result = 0;
-        }
-        break;
-    }
+//    case 10: {
+//        if (!check_list($message, "specialty")) {
+//            $result = 0;
+//        }
+//        break;
+//    }
+//    case 11: {
+//        if (!check_list($message, "business")) {
+//            $result = 0;
+//        }
+//        break;
+//    }
 }
 
 echo $result;
