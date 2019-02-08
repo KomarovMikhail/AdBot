@@ -96,6 +96,8 @@
 .offer-list-item:hover {
     cursor: pointer;
     background: lightsalmon;
+    overflow: visible;
+    white-space: normal;
 }
 
 .offer-block {
