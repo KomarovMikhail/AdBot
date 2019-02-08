@@ -54,7 +54,7 @@ switch ($step) {
         break;
     }
     case 5: {
-        if (!check_list($message, "speciality")) {
+        if (!check_list($message, "specialty")) {
             $result = 0;
         }
         break;
@@ -80,7 +80,7 @@ switch ($step) {
         break;
     }
     case 10: {
-        if (!check_list($message, "speciality")) {
+        if (!check_list($message, "specialty")) {
             $result = 0;
         }
         break;
