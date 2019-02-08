@@ -5,22 +5,24 @@ function check_list($message, $property) {
     $file = fopen("properties/" . $property, "r") or die("Unable to open file!");
     while(!feof($file)) {
         $item = fgets($file);
-        $lower_item = mb_strtolower($item);
-        $lower_input = mb_strtolower($message);
-        if ($lower_input !== $lower_item) {
+        $lower_item = trim(mb_strtolower($item));
+        $lower_input = trim(mb_strtolower($message));
+        if (strcasecmp($lower_input, $lower_item) == 0) {
             fclose($file);
-            return false;
+            return true;
         }
     }
     fclose($file);
-    return true;
+    return false;
 }
 
 $message = $_POST['message'];
 $step = $_POST['step'];
-//$step = 7;
-//$message = "1.2334";
+//$step = 2;
+//$message = "Москва";
 $result = 1;
+
+
 
 switch ($step) {
     case 1: {
@@ -39,6 +41,7 @@ switch ($step) {
         break;
     }
     case 2: {
+        $message .= "\n";
         if (!check_list($message, "city")) {
             $result = 0;
         }
