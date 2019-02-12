@@ -43,4 +43,4 @@ fclose($file);
 array_multisort($sort_keys, $items);
 
 header('Content-type: application/json');
-echo json_encode(array_slice($items, 0, 3), JSON_UNESCAPED_UNICODE);
+echo json_encode($items, JSON_UNESCAPED_UNICODE);

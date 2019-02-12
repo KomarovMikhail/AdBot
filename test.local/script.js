@@ -76,12 +76,12 @@ function onUserInput() {
         return;
     }
     let message = document.getElementById("message-input").value;
-    let item = message;
+    // let item = message;
     let property = botMessageHandler.getProperty();
 
-    if (botMessageHandler.needList()) {
-        item = getLastItem(message);
-    }
+    // if (botMessageHandler.needList()) {
+    //     item = getLastItem(message);
+    // }
 
     let request = getXmlHttp();
     request.onreadystatechange = function() {
@@ -103,19 +103,19 @@ function onUserInput() {
     };
     request.open('POST', '/handlers/offer_list_handler.php', true);
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    request.send('message=' + item + '&property=' + property);
+    request.send('message=' + message + '&property=' + property);
 }
 
 function onClickItem(event) {
     event = event || window.event; // IE
     let target = event.target || event.srcElement; // IE
-    let value = target.innerHTML;
-    if (botMessageHandler.needList()) {
-        value = addItemToList(document.getElementById("message-input").value, target.innerHTML);
-        document.getElementById("message-input").value = value;
-        return;
-    }
-    document.getElementById("message-input").value = value;
+    // let value = target.innerHTML;
+    // if (botMessageHandler.needList()) {
+    //     value = addItemToList(document.getElementById("message-input").value, target.innerHTML);
+    //     document.getElementById("message-input").value = value;
+    //     return;
+    // }
+    document.getElementById("message-input").value = target.innerHTML;
     onSendMessage();
 }
 
@@ -166,6 +166,15 @@ function onSendMessage() {
         cleanInput(inputElement);
         document.getElementById("message-input").focus();
         return;
+    }
+
+    if (botMessageHandler.needList()) {
+        if (message !== "Дальше" && message !== "дальше") {
+            sendMessage("Ок, записал. Можешь ввести еще, или выбери \"Дальше\" чтобы продолжить диалог.");
+            cleanInput(inputElement);
+            document.getElementById("message-input").focus();
+            return;
+        }
     }
     userDataHandler.append(botMessageHandler.step, message);
 

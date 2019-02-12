@@ -84,6 +84,8 @@
     background: coral;
     z-index: 1;
     font-size: 17px;
+    max-height: 105px;
+    overflow-y: scroll;
 }
 
 .offer-list-item {
