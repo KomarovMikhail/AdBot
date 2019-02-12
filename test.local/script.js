@@ -82,6 +82,9 @@ function onUserInput() {
     // if (botMessageHandler.needList()) {
     //     item = getLastItem(message);
     // }
+    if (message === "") {
+        message = "$"; // for correct work
+    }
 
     let request = getXmlHttp();
     request.onreadystatechange = function() {
@@ -186,10 +189,11 @@ function onSendMessage() {
 
     document.getElementById("message-input").focus();
 
-    if (botMessageHandler.needChoiceList()) {
-        if (botMessageHandler.step === 17) { // need to change
-            return;
-        }
+    if (botMessageHandler.needSortableChoiceList()) {
+        onUserInput();
+    }
+
+    if (botMessageHandler.needFixedChoiceList()) {
         inputElement.disabled = true;
         inputElement.value = "Выбери из списка:";
         onUserInput();
